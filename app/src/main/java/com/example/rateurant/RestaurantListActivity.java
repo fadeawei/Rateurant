@@ -1,7 +1,10 @@
 package com.example.rateurant;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -31,11 +34,12 @@ public class RestaurantListActivity extends AppCompatActivity {
             public void handleResponse(List<Restaurant> restaurantList)
             {
                 // first contact instance has been found
-                ArrayAdapter<Restaurant> adapter = new ArrayAdapter<>(
+                RestaurantAdapter adapter = new RestaurantAdapter(
                         RestaurantListActivity.this,
                         android.R.layout.simple_list_item_1,
                         restaurantList
                 );
+
                 listViewRestaurant.setAdapter(adapter);
             }
             @Override
