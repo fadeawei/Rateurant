@@ -1,6 +1,7 @@
 package com.example.rateurant;
 
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -19,12 +20,25 @@ import java.util.Map;
 public class RestaurantListActivity extends AppCompatActivity {
 
     private ListView listViewRestaurant;
+    private FloatingActionButton addNew;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_list);
         wireWidgets();
+        addNew.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RestaurantListActivity.this, RestaurantActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         populateListView();
     }
 
@@ -52,8 +66,7 @@ public class RestaurantListActivity extends AppCompatActivity {
     }
 
     private void wireWidgets() {
+        addNew = findViewById(R.id.fab_restaurantlist_new);
         listViewRestaurant = findViewById(R.id.listview_restaurantlist);
     }
-
-
 }
