@@ -1,7 +1,9 @@
 package com.example.rateurant;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
@@ -22,13 +24,34 @@ public class RestaurantActivity extends AppCompatActivity {
     private SeekBar seekBar;
     private Button saveRestaurant;
 
+    private Restaurant restaurant;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant);
         wireWidgets();
-        saveRestaurantInfo();
+        saveRestaurant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveRestaurantInfo();
+            }
+        });
+        prefillFields();
     }
+
+    private void prefillFields() {
+        Intent restaurantIntent = getIntent();
+        restaurant = restaurantIntent.getParcelableExtra(RestaurantListActivity.EXTRA_RESTAURANT);
+        if(restaurant != null){
+            editTextName.setText(restaurant.getName());
+            editTextCuisine.setText(restaurant.getCuisine());
+            editTextAddress.setText(restaurant.getAddress());
+            editTextWebsite.setText(restaurant.getWebsiteLink());
+            ratingBar.setRating((float)restaurant.getRating());
+            seekBar.setProgress(restaurant.getPrice());
+        }
+    };
 
     private boolean allFieldsValid(String name, String cuisine, String address, String website) {
         if (name.length() > 0 && cuisine.length() > 0 && address.length() > 0 && website.length() > 0) {
@@ -45,12 +68,18 @@ public class RestaurantActivity extends AppCompatActivity {
         float rating = ratingBar.getRating();
         int price = seekBar.getProgress()+1;
         if(allFieldsValid(name,cuisine,address,website)){
-            Restaurant restaurant = new Restaurant();
-            restaurant.setName(name);
-            restaurant.setCuisine(cuisine);
-            restaurant.setPrice(price);
-            restaurant.setWebsiteLink(website);
-            restaurant.setRating(rating);
+            if(restaurant != null){
+                restaurant.setName(name);
+                restaurant.setCuisine(cuisine);
+                restaurant.setPrice(price);
+                restaurant.setWebsiteLink(website);
+                restaurant.setRating(rating);
+                restaurant.setAddress(address);
+            }
+            else{
+                restaurant = new Restaurant(name,cuisine,rating,website,address,price);
+            }
+
             Backendless.Persistence.save( restaurant, new AsyncCallback<Restaurant>() {
                 public void handleResponse( Restaurant restaurant )
                 {

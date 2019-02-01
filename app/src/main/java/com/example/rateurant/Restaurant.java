@@ -1,6 +1,9 @@
 package com.example.rateurant;
 
-public class Restaurant {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Restaurant implements Parcelable {
 
     private String name;
     private String cuisine;
@@ -9,6 +12,8 @@ public class Restaurant {
     private String address;
     private int price; //1-5
     // need a default constructor for backendless
+    private String objectId; //backendless field
+    private String ownerId; //backendless field
 
 
     public Restaurant(String name, String cuisine, double rating, String websiteLink, String address, int price) {
@@ -83,4 +88,62 @@ public class Restaurant {
     public void setPrice(int price) {
         this.price = price;
     }
+
+
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    protected Restaurant(Parcel in) {
+        name = in.readString();
+        cuisine = in.readString();
+        rating = in.readDouble();
+        websiteLink = in.readString();
+        address = in.readString();
+        price = in.readInt();
+        objectId = in.readString();
+        ownerId = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(cuisine);
+        dest.writeDouble(rating);
+        dest.writeString(websiteLink);
+        dest.writeString(address);
+        dest.writeInt(price);
+        dest.writeString(objectId);
+        dest.writeString(ownerId);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Restaurant> CREATOR = new Parcelable.Creator<Restaurant>() {
+        @Override
+        public Restaurant createFromParcel(Parcel in) {
+            return new Restaurant(in);
+        }
+
+        @Override
+        public Restaurant[] newArray(int size) {
+            return new Restaurant[size];
+        }
+    };
 }
